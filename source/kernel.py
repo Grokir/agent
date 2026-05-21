@@ -6,9 +6,10 @@ from typing import Optional
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
 from langchain_core.messages import SystemMessage, HumanMessage
-
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import MemorySaver
+
+from system_prompt import SYSPROMPT
 
 # Конфигурация LM Studio
 LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
@@ -28,24 +29,13 @@ def kernel_init(tools:list):
         # temperature=0.2,
         temperature=0.7,
     )
-    
-    system_prompt = """Ты — помощник для легального пентеста.
-    Твои возможности:
-    1. nmap_scan — сканирует порты цели и возвращает информацию о сервисах.
-    2. fuzz_endpoints — ищет скрытые веб-эндпоинты методом фаззинга.
-
-    Ты получаешь задачу от пользователя, выполняешь её с помощью инструментов и анализируешь результаты.
-    При необходимости уточняй у пользователя цель и параметры.
-    Всегда говори, что ты делаешь, и предупреждай, если цель не указана.
-    Не выполняй атаки на отказ в обслуживании, не брутфорсь пароли и не экплуатируй найденное.
-    Только информационная разведка и фаззинг."""
 
     memory = MemorySaver()
     global AGENT_EXEC
     AGENT_EXEC = create_agent(
         llm,
         tools,
-        system_prompt=system_prompt,
+        system_prompt=SYSPROMPT,
         checkpointer=memory,
     )
 
