@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from ag_tools.nmap_scan import run_scan, run
+from agent_tools.nmap_scan import run_scan, run
 from kernel.kernel import kernel_init, send_prompt
 
 
