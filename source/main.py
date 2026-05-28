@@ -1,6 +1,6 @@
 from langchain_core.tools import tool
-from nmap_scan import run_scan, run
-from kernel import kernel_init, send_prompt
+from ag_tools.nmap_scan import run_scan, run
+from kernel.kernel import kernel_init, send_prompt
 
 
 def main():
