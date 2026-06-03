@@ -1,19 +1,25 @@
 from langchain_core.tools import tool
 from agent_tools.nmap_scan import run_scan, run
+from agent_tools.llm_vuln_test import generate_dynamic
 from kernel.kernel import kernel_init, send_prompt
 
 
 def main():
     # info()
     # run_scan(target="192.168.0.1", ports_to_scan="22,80,1900")
-    tools = [run_scan]
+    tools = [run_scan, generate_dynamic]
     kernel_init(tools=tools)
 
     while True:
         try:
             user_input = input("[>] Запрос: ").strip()
             if user_input.lower() in ("exit", "quit"):
+                print("\n[!] Выход.")
                 break
+            if user_input.lower() == "help":
+                print("Выход  : 'exit' / 'quit' / Ctrl+C")
+                print("Справка: 'help'\n")
+                continue
             if not user_input:
                 continue
 
@@ -26,8 +32,8 @@ def main():
             print("\n[!] Выход.")
             break
         except Exception as e:
-            print(f"[-] Ошибка: {e}")
+            print(f"\n[-] Ошибка: {e}")
 
 if __name__ == "__main__":
-    # main()
-    run(target="192.168.0.104")
+    main()
+    # run(target="192.168.0.104")
