@@ -9,7 +9,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import MemorySaver
 
-from system_prompt import SYSPROMPT
+from kernel.system_prompt import SYSPROMPT
 
 # Конфигурация LM Studio
 LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
@@ -38,6 +38,7 @@ def kernel_init(tools:list):
         system_prompt=SYSPROMPT,
         checkpointer=memory,
     )
+    # return AGENT_EXEC
 
 def send_prompt(input_str: str):
     global CONFIG
@@ -46,3 +47,7 @@ def send_prompt(input_str: str):
         {"messages": [HumanMessage(content=input_str)]},
         config=CONFIG
     )
+    # return model.invoke(
+    #     {"messages": [HumanMessage(content=input_str)]},
+    #     config=CONFIG
+    # )
