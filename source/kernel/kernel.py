@@ -38,16 +38,11 @@ def kernel_init(tools:list):
         system_prompt=SYSPROMPT,
         checkpointer=memory,
     )
-    # return AGENT_EXEC
 
-def send_prompt(input_str: str):
+def send_prompt(input_str: str, role:str="system"):
     global CONFIG
     global AGENT_EXEC
     return AGENT_EXEC.invoke(
-        {"messages": [HumanMessage(content=input_str)]},
+        {"role": role, "messages": [HumanMessage(content=input_str)]},
         config=CONFIG
     )
-    # return model.invoke(
-    #     {"messages": [HumanMessage(content=input_str)]},
-    #     config=CONFIG
-    # )
