@@ -1,13 +1,27 @@
 from langchain_core.tools import tool
-from agent_tools.nmap_scan import run_scan, run
-from agent_tools.llm_vuln_test import generate_dynamic
 from kernel.kernel import kernel_init, send_prompt
-
+from agent_tools.attack_generator import (
+    get_attack_types,
+    get_random_attack,
+    get_attack_by_description,
+    get_all_attacks_by_type,
+    generate_custom_attack,
+    send_prompt_to_mas,
+    analyze_response
+)
 
 def main():
     # info()
     # run_scan(target="192.168.0.1", ports_to_scan="22,80,1900")
-    tools = [run_scan, generate_dynamic]
+    tools = [
+        get_attack_types,
+        get_random_attack,
+        get_attack_by_description,
+        get_all_attacks_by_type,
+        generate_custom_attack,
+        send_prompt_to_mas,
+        analyze_response
+    ]
     kernel_init(tools=tools)
 
     while True:
