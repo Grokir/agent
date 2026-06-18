@@ -10,6 +10,8 @@ from agent_tools.attack_generator import (
     analyze_response
 )
 
+import readline # испорт нуже для оперативной редакции ввода
+
 def main():
     # info()
     # run_scan(target="192.168.0.1", ports_to_scan="22,80,1900")
