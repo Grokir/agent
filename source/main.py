@@ -1,3 +1,7 @@
+import asyncio
+from aioconsole import ainput  # Асинхронный input с поддержкой readline
+import readline # импорт нуже для оперативной редакции ввода
+
 from langchain_core.tools import tool
 from kernel.kernel import kernel_init, send_prompt
 from agent_tools.attack_generator import (
@@ -10,9 +14,8 @@ from agent_tools.attack_generator import (
     analyze_response
 )
 
-import readline # испорт нуже для оперативной редакции ввода
 
-def main():
+async def main():
     # info()
     # run_scan(target="192.168.0.1", ports_to_scan="22,80,1900")
     tools = [
@@ -28,7 +31,9 @@ def main():
 
     while True:
         try:
-            user_input = input("[>] Запрос: ").strip()
+            # user_input = input("[>] Запрос: ").strip()
+            user_input = await ainput("[>] Запрос: ")
+            user_input = user_input.strip()
             if user_input.lower() in ("exit", "quit"):
                 print("\n[!] Выход.")
                 break
@@ -40,7 +45,7 @@ def main():
                 continue
 
             # Запуск агента – передаём сообщение от пользователя
-            result = send_prompt(user_input)
+            result = await send_prompt(user_input)
             # Последнее сообщение от AI – это финальный ответ
             final_message = result["messages"][-1]
             print(f"\n[+] Ответ агента:\n{final_message.content}\n")
@@ -51,5 +56,6 @@ def main():
             print(f"\n[-] Ошибка: {e}")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
+    # main()
     # run(target="192.168.0.104")

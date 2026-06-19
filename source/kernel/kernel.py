@@ -41,10 +41,10 @@ def kernel_init(tools:list):
         checkpointer=memory,
     )
 
-def send_prompt(input_str: str, role:str="system"):
+async def send_prompt(input_str: str, role:str="system"):
     global CONFIG
     global AGENT_EXEC
-    return AGENT_EXEC.invoke(
+    return await AGENT_EXEC.ainvoke(
         {"role": role, "messages": [HumanMessage(content=input_str)]},
         config=CONFIG
     )
