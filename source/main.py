@@ -49,13 +49,13 @@ async def main():
             # Последнее сообщение от AI – это финальный ответ
             final_message = result["messages"][-1]
             print(f"\n[+] Ответ агента:\n{final_message.content}\n")
-        except KeyboardInterrupt:
-            print("\n[!] Выход.")
-            break
         except Exception as e:
             print(f"\n[-] Ошибка: {e}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
-    # main()
+    try:
+        asyncio.run(main())
+        # main()
+    except KeyboardInterrupt:
+        print("\n[!] Выход.")
     # run(target="192.168.0.104")
