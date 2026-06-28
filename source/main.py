@@ -3,8 +3,9 @@ from aioconsole import ainput  # Асинхронный input с поддерж�
 import readline # импорт нуже для оперативной редакции ввода
 
 from langchain_core.tools import tool
-from kernel.kernel import kernel_init, send_prompt
+from kernel.kernel import kernel_init, send_prompt, memory_clear
 from agent_tools.attack_generator import (
+    path_to_attacks_db,
     get_attack_types,
     get_random_attack,
     get_attack_by_description,
@@ -19,6 +20,7 @@ async def main():
     # info()
     # run_scan(target="192.168.0.1", ports_to_scan="22,80,1900")
     tools = [
+        path_to_attacks_db,
         get_attack_types,
         get_random_attack,
         get_attack_by_description,
@@ -34,12 +36,17 @@ async def main():
             # user_input = input("[>] Запрос: ").strip()
             user_input = await ainput("[>] Запрос: ")
             user_input = user_input.strip()
-            if user_input.lower() in ("exit", "quit"):
+            if user_input.lower() in ("/exit", "/quit"):
                 print("\n[!] Выход.")
                 break
-            if user_input.lower() == "help":
-                print("Выход  : 'exit' / 'quit' / Ctrl+C")
-                print("Справка: 'help'\n")
+            if user_input.lower() == "/mem_clear":
+                memory_clear()
+                print("\n[!] Память агента очищена.")
+                continue
+            if user_input.lower() in ["/help", "/?"]:
+                print("Выход         : '/exit' / '/quit' / Ctrl+C")
+                print("Очистка памяти: '/mem_clear'")
+                print("Справка       : '/help' / '/?'\n")
                 continue
             if not user_input:
                 continue
