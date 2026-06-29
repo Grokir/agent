@@ -1,3 +1,15 @@
+
+# Отключение предупреждений от Pydantic об версии Python
+import warnings
+
+# Задаем жесткое "глушение" для всего
+warnings.filterwarnings("ignore")
+# "Ломаем" функции, которыми langchain пытается сбросить или изменить фильтры
+warnings.resetwarnings = lambda: None
+warnings.filterwarnings = lambda *args, **kwargs: None
+
+
+
 import asyncio
 from time import perf_counter as timer
 from aioconsole import ainput  # Асинхронный input с поддержкой readline
