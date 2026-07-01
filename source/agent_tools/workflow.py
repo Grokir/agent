@@ -14,7 +14,7 @@ def save_markdown_file(target: str, content: str) -> str:
     time_str = now.strftime("%H-%M")        # Например: 14-30 (используем дефис, т.к. двоеточие запрещено в Windows)
 
     # 4. Формируем итоговое имя файла
-    file_name = f"{target}-report-{date_str}-{time_str}.md"
+    file_name = f"{target}-report--{date_str}--{time_str}.md"
     file_path = abspath(SAVE_PATH) + '/' + file_name
     try:
         # Создаем директорию, если её не существует
