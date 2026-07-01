@@ -12,6 +12,7 @@ warnings.filterwarnings = lambda *args, **kwargs: None
 
 import asyncio
 from time import perf_counter as timer
+from datetime import datetime
 from aioconsole import ainput  # Асинхронный input с поддержкой readline
 import readline # импорт нуже для оперативной редакции ввода
 
@@ -39,7 +40,7 @@ async def main():
         get_random_attack,
         get_attack_by_description,
         get_all_attacks_by_type,
-        generate_custom_attack,
+        # generate_custom_attack,
         send_prompt_to_mas,
         analyze_response,
         save_markdown_file
@@ -65,6 +66,10 @@ async def main():
                 continue
             if not user_input:
                 continue
+            now = datetime.now()
+            date_str = now.strftime("%Y-%m-%d")
+            time_str = now.strftime("%H-%M")
+            print(f"[!] Начало тестирования: {date_str} {time_str}")
 
             # Запуск агента – передаём сообщение от пользователя
             time_start = timer()
@@ -76,6 +81,7 @@ async def main():
             print(f"\n[+] Время ответа: {elapsed_time:.2f} сек. Ответ агента:\n{final_message.content}\n")
         except Exception as e:
             print(f"\n[-] Ошибка: {e}")
+            # 0:32 - start test
 
 if __name__ == "__main__":
     try:
