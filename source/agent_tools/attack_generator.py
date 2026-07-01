@@ -129,8 +129,20 @@ def get_all_attacks_by_type(attack_type: str) -> str:
 
     lines = []
     for idx, a in enumerate(attacks, 1):
-        lines.append(f"{idx}. {a['descr']}\n   Промпт: {a['prompt'][:100]}{'...' if len(a['prompt'])>100 else ''}")
+        lines.append(f"ID атаки = {a['id']}. Описание:{a['descr']}\n   Промпт: {a['prompt']}")
     return "\n".join(lines)
+
+@tool
+def get_attack_by_type_and_id(attack_type: str, attack_id: int) -> str:
+    """Возвращает атаку указанного типа attack_type с указанным attack_id с её описанием и промптом."""
+    attacks = get_attacks_by_type(attack_type)
+    if not attacks:
+        return f"Тип '{attack_type}' не найден или не содержит атак."
+
+    res_attack = ""
+    for a in attacks:
+        if a["id"] == attack_id:
+            return f"ID атаки = {a['id']}. Описание:{a['descr']}\n   Промпт: {a['prompt']}"
 
 @tool
 def generate_custom_attack(base_prompt: str, context: str) -> str:
