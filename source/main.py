@@ -68,7 +68,7 @@ async def main():
                 continue
             now = datetime.now()
             date_str = now.strftime("%Y-%m-%d")
-            time_str = now.strftime("%H-%M")
+            time_str = now.strftime("%H:%M")
             print(f"[!] Начало тестирования: {date_str} {time_str}")
 
             # Запуск агента – передаём сообщение от пользователя
