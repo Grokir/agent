@@ -1,6 +1,6 @@
 [
     {
-        "type": "injection",
+        "type": "llm-prompt-injection",
         "list": [
             {
                 "id":1,
@@ -230,7 +230,7 @@
         ]
     },
     {
-        "type": "multi_agent_injection",
+        "type": "mas-prompt-injection",
         "list": [
             {
                 "id":1,
