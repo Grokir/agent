@@ -1,4 +1,3 @@
-
 # Отключение предупреждений от Pydantic об версии Python
 import warnings
 
@@ -24,6 +23,7 @@ from agent_tools.attack_generator import (
     get_random_attack,
     get_attack_by_description,
     get_all_attacks_by_type,
+    get_attack_by_type_and_id,
     generate_custom_attack,
     send_prompt_to_mas,
     analyze_response
@@ -40,6 +40,7 @@ async def main():
         get_random_attack,
         get_attack_by_description,
         get_all_attacks_by_type,
+        get_attack_by_type_and_id,
         # generate_custom_attack,
         send_prompt_to_mas,
         analyze_response,

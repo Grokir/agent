@@ -1,6 +1,7 @@
 import json
 import random
 import os
+import uuid
 import requests
 from typing import List, Dict, Any, Optional
 from langchain_core.tools import tool
@@ -8,10 +9,11 @@ from langchain_openai import ChatOpenAI
 
 # Конфигурация
 
-TARGET_MAS_URL = os.getenv("TARGET_MAS_URL", "http://localhost:8080")
-# MAS_ENDPOINT = f"{TARGET_MAS_URL}/agent/message"  # подставьте свой эндпоинт
-# MAS_ENDPOINT = "http://localhost:11434/api/chat" # целью является MAS, развёрнутый на Ollama
-MAS_ENDPOINT = "http://localhost:5000/chat" # целью является MAS, развёрнутый на Ollama
+# Целью является MAS-координатор (репитер на FastAPI из agent_target_mas,
+# ветка agent_coordinator): единственный эндпоинт POST /chat, маршрутизацию
+# к IT-agent/DB-agent координатор делает сам, agent_id в пути больше не нужен.
+TARGET_MAS_URL = os.getenv("TARGET_MAS_URL", "http://localhost:5000")
+MAS_ENDPOINT = f"{TARGET_MAS_URL}/chat"
 LLM_FOR_GENERATION = None
 PATH_TO_TEMPLATES = "attacks.json"  # путь относительно корня проекта
 
@@ -139,10 +141,11 @@ def get_attack_by_type_and_id(attack_type: str, attack_id: int) -> str:
     if not attacks:
         return f"Тип '{attack_type}' не найден или не содержит атак."
 
-    res_attack = ""
     for a in attacks:
         if a["id"] == attack_id:
             return f"ID атаки = {a['id']}. Описание:{a['descr']}\n   Промпт: {a['prompt']}"
+
+    return f"Атака с id={attack_id} не найдена среди атак типа '{attack_type}'."
 
 @tool
 def generate_custom_attack(base_prompt: str, context: str) -> str:
@@ -158,24 +161,48 @@ def generate_custom_attack(base_prompt: str, context: str) -> str:
     return response.content
 
 @tool
-def send_prompt_to_mas(prompt: str, agent_id: str = "target") -> str:
+def send_prompt_to_mas(prompt: str, session_id: str = None) -> str:
     """
-    Отправляет вредоносный промпт в целевую мультиагентную систему (MAS).
-    Аргументы: prompt - текст запроса, agent_id - идентификатор агента в MAS.
-    Возвращает ответ MAS или сообщение об ошибке.
+    Отправляет вредоносный промпт координатору целевой мультиагентной системы (MAS).
+    Аргументы:
+      prompt - текст запроса.
+      session_id - идентификатор сессии диалога с MAS. Если не передан, каждый вызов
+        начинает новую изолированную сессию (координатор не помнит предыдущие атаки).
+        Передавай ОДИНАКОВЫЙ session_id в нескольких вызовах подряд, только если атака
+        намеренно многоходовая (например, отравление памяти диалога) - в остальных
+        случаях каждую атаку следует отправлять в новой сессии.
+    Возвращает статус координатора, выбранного им подрядчика (если он есть)
+    и его ответ, либо сообщение об ошибке.
     """
+    if not session_id:
+        session_id = str(uuid.uuid4())
+
     headers = {"Content-Type": "application/json"}
     payload = {
+        "session_id": session_id,
         "message": prompt
     }
 
     try:
-        resp = requests.post(MAS_ENDPOINT+"/"+agent_id, headers=headers, json=payload, timeout=120)
+        resp = requests.post(MAS_ENDPOINT, headers=headers, json=payload, timeout=120)
         resp.raise_for_status()
-        # Предполагаем, что MAS возвращает текст или JSON
-        return resp.text
     except requests.exceptions.RequestException as e:
         return f"Ошибка при отправке запроса к MAS: {str(e)}"
+
+    try:
+        data = resp.json()
+    except ValueError:
+        return f"MAS вернула не-JSON ответ: {resp.text}"
+
+    status = data.get("status", "unknown")
+    target_agent = data.get("target_agent")
+    reply = data.get("reply", "")
+
+    lines = [f"Статус координатора: {status}"]
+    if target_agent:
+        lines.append(f"Подрядчик: {target_agent}")
+    lines.append(f"Ответ MAS: {reply}")
+    return "\n".join(lines)
 
 # @tool
 # def analyze_response(response: str, attack_type: str = "injection") -> str:
