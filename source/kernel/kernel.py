@@ -16,13 +16,13 @@ LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
 # MODEL_NAME = "qwen3.6-35b-a3b"  # Должен совпадать с загруженной моделью
 # MODEL_NAME = "mistral-nemo-instruct-2407"
 # MODEL_NAME = "qwen2.5-7b-instruct"
-# MODEL_NAME = "qwen2.5-3b-instruct"
+MODEL_NAME = "qwen2.5-3b-instruct"
 # MODEL_NAME = "qwen_qwen3.5-2b"
 # MODEL_NAME = "gigachat3.1-10b-a1.8b"
 
 # UNCENSORED MODELS
 # MODEL_NAME = "qwen2.5-7b-instruct-uncensored"
-MODEL_NAME = "gigachat3.1-lightning-uncensored"
+# MODEL_NAME = "gigachat3.1-lightning-uncensored"
 
 CONFIG = {"configurable": {"thread_id": "session-1"}}
 AGENT_EXEC = None
