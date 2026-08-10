@@ -429,7 +429,7 @@ impl SendPromptToMas {
     pub fn new(target_mas_url: &str) -> Self {
         Self {
             http: reqwest::Client::new(),
-            endpoint: format!("{target_mas_url}/chat"),
+            endpoint: format!("{target_mas_url}"),
         }
     }
 }
